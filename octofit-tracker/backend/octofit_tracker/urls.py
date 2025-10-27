@@ -17,6 +17,12 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import UserViewSet, TeamViewSet, ActivityViewSet, WorkoutViewSet, LeaderboardViewSet, api_root
+from django.http import JsonResponse
+def codespace_check(request):
+    host = request.get_host()
+    if "-8000.app.github.dev" in host:
+        return JsonResponse({"codespace": True, "host": host})
+    return JsonResponse({"codespace": False, "host": host})
 import os
 
 router = DefaultRouter()
@@ -30,4 +36,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', api_root, name='api-root'),
     path('api/', include(router.urls)),
+    path('codespace/', codespace_check, name='codespace-check'),
 ]
